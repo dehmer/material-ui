@@ -6,6 +6,8 @@ To get an idea of [React](https://reactjs.org) and [Material-UI](https://materia
 
 ### What?
 
+![Screenshot](assets/screenshot-1.png)
+
 * Simple React wrapper for Leaflet
 * State delegation: primary map -> overview map
 * Cycle through a list of tile providers
