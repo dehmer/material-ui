@@ -12,7 +12,7 @@ To get an idea of [React](https://reactjs.org) and [Material-UI](https://materia
 
 ## How?
 
-The ususal `create-react-app` scripts:
+The usual `create-react-app` scripts:
 * `npm start` (should work)
 * `npm test` (don't care for now)
 * `npm run build` (don't care for now)
