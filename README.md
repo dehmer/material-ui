@@ -8,6 +8,7 @@ To get an idea of [React](https://reactjs.org) and [Material-UI](https://materia
 
 * Simple React wrapper for Leaflet
 * State delegation: primary map -> overview map
+* Cycle through a list of tile providers
 * `<Paper/>` overlay (overview map)
 
 ## How?
