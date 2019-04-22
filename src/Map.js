@@ -39,6 +39,10 @@ class Map extends React.Component {
     }
   }
 
+  setCenter(center) {
+    this.map.panTo(center)
+  }
+
   componentDidMount() {
     this.map = L.map(this.props.id, this.props.options)
     this.setTileProvider(this.props.tileProvider)
@@ -60,6 +64,10 @@ class Map extends React.Component {
     // Special handling of section outline (overview map):
     const { section } = this.props
     if(!section || !section.equals(prevProps.section)) this.setOutline(section)
+
+    // Re-center if necessary:
+    const { center } = this.props
+    if(center && !center.equals(prevProps.center)) this.setCenter(center)
   }
 
   render() {
