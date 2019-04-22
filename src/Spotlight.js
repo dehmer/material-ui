@@ -1,10 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Paper from '@material-ui/core/Paper'
-import TextField from '@material-ui/core/TextField'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
+import { Paper, TextField, List, ListItem, ListItemText, TableRow } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 import L from 'leaflet'
 import search from './nominatim'
@@ -19,16 +15,13 @@ const styles = theme => ({
     zIndex: 20,
     display: 'flex',
     flexDirection: 'column',
-    backgroundColor: theme.palette.background.paper
   },
   searchField: {
-    // TODO: align width with container (root)
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit
   },
   list: {
-    overflow: 'auto',
-    flexGrow: 1,
+    overflow: 'auto'
   }
 })
 
@@ -51,18 +44,19 @@ class Spotlight extends React.Component {
       lon: row.lon
     }))
 
-    this.setState({...this.state, rows, focusIndex: -1})
+    this.setState({ ...this.state, rows })
   }
 
   handleKeyPress(event) {
     const searchOptions = {
-      limit: 7,
-      addressdetails: 1,
+      // limit: 7,
+      addressdetails: 0,
       namedetails: 0
     }
 
     switch(event.key) {
       case 'Enter':
+        // TODO: supply search function with props.
         search(searchOptions)(event.target.value)
           .then(searchResult => this.updateResultList(searchResult))
         break
@@ -74,8 +68,7 @@ class Spotlight extends React.Component {
   handleKeyDown(event) {
     switch(event.key) {
       case 'ArrowDown':
-        if(this.state.rows.length === 0) return
-        this.setState({...this.state, focusIndex: 0})
+        // TODO: move focus from textfield to result list
         break
       default:
         break
@@ -89,19 +82,12 @@ class Spotlight extends React.Component {
   }
 
   handleNavigation(event) {
-    console.log('handleNavigation', event.key, this.state.focusIndex)
     switch(event.key) {
       case 'ArrowUp':
-        this.setState({
-          ...this.state,
-          focusIndex: Math.max(0, this.state.focusIndex - 1)
-        })
+        // TODO: move focus to previous item
         break
       case 'ArrowDown':
-        this.setState({
-          ...this.state,
-          focusIndex: Math.min(this.state.rows.length - 1, this.state.focusIndex + 1)
-        })
+        // TODO: move focus to next item
         break
       case 'Enter':
         break
@@ -112,18 +98,19 @@ class Spotlight extends React.Component {
 
   render() {
     const { classes } = this.props
-    const { rows, focusIndex } = this.state
+    const { rows } = this.state
 
     // TODO: explicitly apply focus state upon ArrayUp/Down:
     // https://github.com/mui-org/material-ui/issues/1670
+    // https://reactjs.org/docs/refs-and-the-dom.html
 
-    const items = () => (rows || []).map((row, index) => (
+    const items = () => (rows || []).map(row => (
       <ListItem
         button
         divider
         key={ row.key }
+        ref={ this.refs[row.key] }
         onClick={ () => this.handleSelect(row.key) }
-        onFocus={ () => console.log('focus', row.key )}
       >
         <ListItemText
           primary={row.name}
@@ -138,7 +125,7 @@ class Spotlight extends React.Component {
         elevation={8}
       >
         <TextField
-          id="standard-search"
+          id="search"
           label="Search place or address"
           type="search"
           className={classes.searchField}

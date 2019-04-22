@@ -9,6 +9,9 @@ const DONE             = 4 // The operation is complete.
 const K = value => fn => { fn(value); return value }
 
 const search = options => term => {
+
+  // TODO: sanitize search term (e.g. remove '#')
+
   return new Promise((resolve) => K(new XMLHttpRequest())(xhr => {
     xhr.addEventListener('readystatechange', event => {
       const request = event.target
