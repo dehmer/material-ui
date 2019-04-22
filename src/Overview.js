@@ -11,7 +11,7 @@ const styles = theme => ({
     width: '200px',
     height: '200px',
     bottom: '24px',
-    right: '24px',
+    right: '12px',
     zIndex: 20
   },
 })

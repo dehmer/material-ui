@@ -16,62 +16,49 @@ class App extends React.Component {
 
   constructor(props) {
     super(props)
+    this.tileProviderIndex = 0
+
     this.state = {
 
       // current primary map tile provider index (in tileProviders):
-      tileProviderIndex: 0,
-      tileProvider: tileProviders[0],
-
-      // primary map: viewport (center/zoom):
-      viewport: {
-        center: L.latLng(48.65400545105681, 15.319061279296877),
-        zoom: 13
-      }
+      tileProvider: tileProviders[this.tileProviderIndex],
     }
+  }
+
+  updateState(delta) {
+    // CAUTION: setState() is asynchronous!
+    // see: https://reactjs.org/docs/react-component.html#setstate
+    this.setState({ ...this.state, ...delta })
   }
 
   componentDidMount() {
-    // primary map: cycle through available tile providers:
-    setInterval(() => {
-      const index = (this.state.tileProviderIndex + 1) % tileProviders.length
-      this.setState(Object.assign({}, this.state, {
-        tileProviderIndex: index,
-        tileProvider: tileProviders[index]
-      }))
-    }, 10000)
+    if(this.props.cycleInterval) {
+      // primary map: cycle through available tile providers:
+      setInterval(() => {
+        this.tileProviderIndex = (this.tileProviderIndex + 1) % tileProviders.length
+        this.updateState({
+          tileProvider: tileProviders[this.tileProviderIndex]
+        })
+      }, this.props.cycleInterval)
+    }
+  }
+
+  handleBoundsUpdated(bounds) {
+    if(bounds.equals(this.state.viewport)) return
+    this.updateState({ viewport: bounds })
   }
 
   render() {
-    const setViewport = event => {
-      const { target } = event
-      if(!target) return
-
-      this.setState(Object.assign({}, this.state, {
-        viewport: {
-          center: target.getCenter(),
-          zoom: target.getZoom(),
-          bounds: target.getBounds()
-        }
-      }))
-    }
-
-    const mapCallbacks = {
-      // zoomend: setViewport,
-      // moveend: setViewport,
-      zoom: setViewport,
-      move: setViewport
-    }
-
     return (
       <div>
         <Overview
-          section={this.state.viewport}
+          section={ this.state.viewport }
         />
         <Map
           id="primary-map"
-          tileProvider={this.state.tileProvider}
-          options={mapOptions}
-          callbacks={mapCallbacks}
+          tileProvider={ this.state.tileProvider }
+          options={ mapOptions }
+          onBoundsUpdated={ bounds => this.handleBoundsUpdated(bounds) }
         />
       </div>
     )
