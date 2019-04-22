@@ -6,12 +6,13 @@ To get an idea of [React](https://reactjs.org) and [Material-UI](https://materia
 
 ### What?
 
-![Screenshot](assets/screenshot-1.png)
+![Screenshot](assets/screenshot-2.png)
 
 * Simple React wrapper for Leaflet
 * State delegation: primary map -> overview map
 * Cycle through a list of tile providers
 * `<Paper/>` overlay (overview map)
+* [Nominatim search](https://nominatim.openstreetmap.org) (Material-UI TextField/ListItem)
 
 ## How?
 
