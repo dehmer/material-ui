@@ -51,7 +51,7 @@ class Spotlight extends React.Component {
       lon: row.lon
     }))
 
-    this.setState({...this.state, rows})
+    this.setState({...this.state, rows, focusIndex: -1})
   }
 
   handleKeyPress(event) {
@@ -62,11 +62,21 @@ class Spotlight extends React.Component {
     }
 
     switch(event.key) {
-      case 'Enter': {
+      case 'Enter':
         search(searchOptions)(event.target.value)
           .then(searchResult => this.updateResultList(searchResult))
         break
-      }
+      default:
+        break
+    }
+  }
+
+  handleKeyDown(event) {
+    switch(event.key) {
+      case 'ArrowDown':
+        if(this.state.rows.length === 0) return
+        this.setState({...this.state, focusIndex: 0})
+        break
       default:
         break
     }
@@ -78,14 +88,42 @@ class Spotlight extends React.Component {
       .forEach(row => this.props.onMoveTo(L.latLng(row.lat, row.lon)))
   }
 
+  handleNavigation(event) {
+    console.log('handleNavigation', event.key, this.state.focusIndex)
+    switch(event.key) {
+      case 'ArrowUp':
+        this.setState({
+          ...this.state,
+          focusIndex: Math.max(0, this.state.focusIndex - 1)
+        })
+        break
+      case 'ArrowDown':
+        this.setState({
+          ...this.state,
+          focusIndex: Math.min(this.state.rows.length - 1, this.state.focusIndex + 1)
+        })
+        break
+      case 'Enter':
+        break
+      default:
+        break
+    }
+  }
+
   render() {
     const { classes } = this.props
+    const { rows, focusIndex } = this.state
 
-    const rows = () => (this.state.rows || []).map(row => (
+    // TODO: explicitly apply focus state upon ArrayUp/Down:
+    // https://github.com/mui-org/material-ui/issues/1670
+
+    const items = () => (rows || []).map((row, index) => (
       <ListItem
         button
+        divider
         key={ row.key }
         onClick={ () => this.handleSelect(row.key) }
+        onFocus={ () => console.log('focus', row.key )}
       >
         <ListItemText
           primary={row.name}
@@ -107,8 +145,14 @@ class Spotlight extends React.Component {
           margin="normal"
           variant="outlined"
           onKeyPress={ event => this.handleKeyPress(event) }
+          onKeyDown={ event => this.handleKeyDown(event) }
         />
-        <List className={classes.list}>{ rows() }</List>
+        <List
+          className={ classes.list }
+          onKeyDown={ event => this.handleNavigation(event) }
+        >
+          { items() }
+        </List>
       </Paper>
     )
   }
