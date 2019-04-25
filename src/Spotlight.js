@@ -9,9 +9,9 @@ const styles = theme => ({
   root: {
     position: 'fixed',
     top: 24,
-    left: 12,
+    right: 12,
     bottom: 24,
-    width: 300,
+    width: 360,
     zIndex: 20,
     display: 'flex',
     flexDirection: 'column',

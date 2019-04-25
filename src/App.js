@@ -1,7 +1,6 @@
 import React from 'react'
 import L from 'leaflet'
 import Map from './Map'
-import Overview from './Overview'
 import Spotlight from './Spotlight'
 import '../node_modules/leaflet/dist/leaflet.css'
 import './App.css'
@@ -47,11 +46,6 @@ class App extends React.Component {
     }
   }
 
-  handleBoundsUpdated(bounds) {
-    if(bounds.equals(this.state.viewport)) return
-    this.updateState({ viewport: bounds })
-  }
-
   handleMoveTo(center) {
     this.updateState({ center })
   }
@@ -62,15 +56,11 @@ class App extends React.Component {
         <Spotlight
           onMoveTo={ center => this.handleMoveTo(center) }
         />
-        <Overview
-          section={ this.state.viewport }
-        />
         <Map
           id="primary-map"
           tileProvider={ this.state.tileProvider }
           center={ this.state.center }
           options={ mapOptions }
-          onBoundsUpdated={ bounds => this.handleBoundsUpdated(bounds) }
         />
       </div>
     )
